@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proyecto SENA</title>
+    <style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background-color: #F4EDE3;
+}
+
+h1 {
+    color: #6B4226;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #6B4226;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4e2f1b;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: white;
+    margin: 10px auto;
+    padding: 10px;
+    width: 220px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid #6B4226;
+}
+</style>
+</head>
+<body>
+
+    <h1>Mohanna Coffee ☕</h1>
+
+<h2>Sistema de productos</h2>
+
+<button onclick="agregarProducto()">Agregar producto</button>
+
+<ul id="listaProductos"></ul>
+
+<p class="slogan">Calidez en cada taza ☕</p> 
+
+<script>
+let productos = [];
+
+// CARGAR productos al iniciar
+window.onload = function() {
+    let guardados = localStorage.getItem("productos");
+
+    if (guardados) {
+        productos = JSON.parse(guardados);
+
+        productos.forEach(function(prod) {
+            crearElemento(prod);
+        });
+    }
+};
+
+// FUNCIÓN PARA CREAR ELEMENTO
+function crearElemento(producto) {
+    let lista = document.getElementById("listaProductos");
+    let nuevo = document.createElement("li");
+    nuevo.textContent = producto;
+
+    // ELIMINAR
+    nuevo.onclick = function() {
+        let nombre = this.textContent;
+        productos = productos.filter(p => p !== nombre);
+        localStorage.setItem("productos", JSON.stringify(productos));
+        this.remove();
+    }
+
+    // EDITAR
+    nuevo.oncontextmenu = function(e) {
+        e.preventDefault();
+        let nuevoNombre = prompt("Editar producto:", this.textContent);
+
+        if (nuevoNombre) {
+            let viejo = this.textContent;
+            this.textContent = nuevoNombre;
+
+            let index = productos.indexOf(viejo);
+            if (index !== -1) {
+                productos[index] = nuevoNombre;
+                localStorage.setItem("productos", JSON.stringify(productos));
+            }
+        }
+    }
+
+    lista.appendChild(nuevo);
+}
+
+// AGREGAR PRODUCTO
+function agregarProducto() {
+    let producto = prompt("Escribe el nombre del producto:");
+
+    if (producto) {
+        productos.push(producto);
+        localStorage.setItem("productos", JSON.stringify(productos));
+        crearElemento(producto);
+    }
+}
+</script>
+
+</body>
+</html>
